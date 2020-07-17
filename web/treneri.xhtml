@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">    
+    <h:head>
+        <title>Liverpool FC</title>
+        <f:metadata>
+            <f:event listener="#{prijava.isNotLogged}" type="preRenderView"/>       
+        </f:metadata>
+    </h:head> 
+    <h:body style="padding-top: 50px; padding-bottom: 20px; background-color: tomato;">
+        <b:navBar brand="LIVERPOOL FC" brandHref="#" inverse="true" fixed="top">       
+            <b:navbarLinks>
+                <b:navLink value="Početna" outcome="index"/>                
+                <b:navLink value="Vijesti" outcome="vijesti"/>
+                <b:navLink value="Tekme i raspored" outcome="tekmeRaspored"/>
+                <b:navLink value="Tim" outcome="tim"/>
+                <b:navLink value="Treneri" outcome="treneri"/>
+                <b:navLink value="Stadion" outcome="stadion"/>
+            </b:navbarLinks>
+            <b:navbarLinks pull="right">
+                <b:navLink value="Prijava" outcome="prijava"/>    
+                <b:navLink value="Registracija" outcome="registracija"/>               
+            </b:navbarLinks>
+        </b:navBar>
+        <b:jumbotron>
+            <b:container>
+                <b:row>       
+                    <b:column col-md="6">
+                        <h1>Dobrodošli</h1>
+                        <p align="justify">Ovdje možete pronaći informacije o glavnom treneru  Liverpoola F.C. i njegovim pomoćnicima...
+                        </p>
+                    </b:column>
+                    <b:column col-md="6">
+                        <center>
+                        <h:graphicImage library="slike" name="lfc1.png" 
+                                    width="400" height="200" />      
+                        </center>
+                    </b:column>  
+                </b:row>              
+            </b:container>
+        </b:jumbotron>
+        
+        <b:jumbotron style="background-color: tomato;">
+            <b:container>
+                <b:growl id="growl" showDetail="true" allowDismiss="true"/>
+                <h:form id="forma1">
+                    <b:dataTable var="n" value="#{menadzerController.sviMenadzeri}" 
+                                 style="margin-bottom:40px; background-color: lightgray;"
+                                 id="tabela1"
+                                 widgetVar="tabelaIgraca"
+                                 customLangUrl="//cdn.datatables.net/plug-ins/1.10.12/i18n/Croatian.json" >
+                        <b:dataTableColumn  label="Ime i prezime">
+                            <h:graphicImage value="/uploads/#{n.menadzerSlika}" class="img-circle"
+                                            width="20" height="20"/> 
+                            <h:outputText value=" #{n.ime} #{n.prezime}"/>                   
+                        </b:dataTableColumn>                   
+                        <b:dataTableColumn label="Tip trenera">
+                            <h:outputText value="#{n.tipMenadzera}" />
+                        </b:dataTableColumn>
+                        <b:dataTableColumn label="" style="width: 25%; text-align: right;" orderable="false">
+                            <p:commandLink value="Opširnije" action="#{menadzerController.setMenadzer(n)}" update=":dialog1" oncomplete="PF('dlg1').show();"/>                           
+                        </b:dataTableColumn>
+                    </b:dataTable>
+                </h:form>           
+                <p:dialog id="dialog1" onHide="#{menadzerController.ponisti()}" header="Opširnije o #{menadzerController.menadzer.ime} #{menadzerController.menadzer.prezime}:"
+                          widgetVar="dlg1" modal="true" width="700" height="500" resizable="false" draggable="false" closeOnEscape="true">
+                    <center>
+                    <p:panelGrid class="table table-hover" style="font-size: 15px;">
+                        <p:row>
+                            <p:column colspan="2"> 
+                                <center>
+                                    <h:graphicImage  value="/uploads/#{menadzerController.menadzer.menadzerSlika}" width="70%" height="50%"/> 
+                                </center>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                Ime i prezime:
+                            </p:column>
+                            <p:column>
+                                <b>#{menadzerController.menadzer.ime} #{menadzerController.menadzer.prezime}</b>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                Tip trenera:
+                            </p:column>
+                            <p:column>
+                                <b>#{menadzerController.menadzer.tipMenadzera}</b>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column colspan="2" style="text-align: justify;" >
+                                <b>#{menadzerController.menadzer.menadzerTekst}</b>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    </center>
+                </p:dialog>              
+            </b:container>
+        </b:jumbotron>
+        
+        <b:container> 
+            <hr/>
+            <footer class="container-fluid text-center">
+                <h:graphicImage library="slike" name="lfc_logo.png"
+                                width="50" height="70"/>                
+            </footer>
+        </b:container>
+        <br />
+    </h:body>
+</html>

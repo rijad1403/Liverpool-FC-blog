@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">    
+    <h:head>
+        <title>Liverpool FC</title> 
+        <f:metadata>
+            <f:event listener="#{prijava.isUser}" type="preRenderView"/>
+        </f:metadata>
+    </h:head> 
+    <h:body style="padding-top: 50px; padding-bottom: 20px; background-color: tomato;">
+        <b:navBar brand="LIVERPOOL FC" brandHref="#" inverse="true" fixed="top">       
+            <b:navbarLinks>
+                <b:navLink value="Početna" outcome="korisnik"/>                
+                <b:navLink value="Vijesti" outcome="korisnikVijesti"/>
+                <b:navLink value="Tekme i raspored" outcome="korisnikTekmeRaspored"/>
+                <b:navLink value="Tim" outcome="korisnikTim"/>
+                <b:navLink value="Treneri" outcome="korisnikTreneri"/>
+                <b:navLink value="Stadion" outcome="korisnikStadion"/>
+            </b:navbarLinks>
+            <b:navbarLinks pull="right">
+                <b:navLink value="Dobrodošli, #{prijava.korisnik.ime}" outcome="korisnikProfil"/>
+                <b:navLink outcome="korisnikProfil">
+                    <h:graphicImage value="/uploads/#{prijava.korisnik.korisnikSlika}"
+                                    class="img-circle" width="20" height="20"/>
+                </b:navLink>
+                <h:form styleClass="navbar-form navbar-right">
+                    <b:commandButton look="danger" value="Odjava" action="#{prijava.odjava()}" />               
+                </h:form>
+            </b:navbarLinks>
+        </b:navBar>
+        <b:jumbotron>
+            <b:container>
+                <b:row>       
+                    <b:column col-md="6">
+                        <h1>Dobrodošli</h1>
+                        <p align="justify">Ovdje se nalazi Vaš profil koji možete uređivati po želji i vijesti koje ste komentarisali i komentari na istim...
+                        </p>
+                    </b:column>
+                    <b:column col-md="6">
+                        <center>
+                        <h:graphicImage library="slike" name="lfc1.png" 
+                                    width="400" height="200" />      
+                        </center>
+                    </b:column>  
+                </b:row>              
+            </b:container>
+        </b:jumbotron>     
+        <b:jumbotron style="background-color: tomato;">
+            <b:container>
+                <b:growl id="growl" showDetail="true"/>
+                <b:column class="col-md-6">
+                    <h:form id="form">
+                        <p:panelGrid class="table table-hover"  style="font-size: 15px;">
+                            <f:facet name="header" >
+                            <p:row>
+                                <p:column colspan="2">Moj profil</p:column>                            
+                            </p:row>
+                            </f:facet>
+                            <p:row>
+                                <p:column colspan="2">
+                                    <center>
+                                        <h:graphicImage value="/uploads/#{prijava.korisnik.korisnikSlika}"
+                                                        width="300" height="300"/> 
+                                    </center>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Ime i prezime:
+                                </p:column>
+                                <p:column >
+                                    <b>#{prijava.korisnik.ime} #{prijava.korisnik.prezime}</b>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Korisničko ime:
+                                </p:column>
+                                <p:column >
+                                    <b>#{prijava.korisnik.korisnickoIme} </b>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Email:
+                                </p:column>
+                                <p:column >
+                                    <b>#{prijava.korisnik.email}</b>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Tip korisnika:
+                                </p:column>
+                                <p:column>
+                                    <b>#{prijava.korisnik.tipKorisnika}</b>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                            <p:commandButton value="Uredi profil" update=":dialog1" oncomplete="PF('dlg').show();" />
+                    </h:form>
+                </b:column>
+                <p:dialog id="dialog1" header="Uredi profil:" widgetVar="dlg" modal="true" width="700" height="500" resizable="false" draggable="false" closeOnEscape="true"> 
+                    <h:form id="azurirajKorisnika" class="form-horizontal" enctype="multipart/form-data">
+                         <div class="form-group">
+                                <label class="control-label col-sm-2">Ime:</label>
+                                <div class="col-sm-10">
+                                    <h:inputText class="form-control" required="true"
+                                                 requiredMessage="Unesite ime!"
+                                                 value="#{prijava.korisnik.ime}" validator="validacijaIme" />
+                                </div> 
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">Prezime:</label>
+                                <div class="col-sm-10">
+                                    <h:inputText class="form-control" required="true"
+                                                 requiredMessage="Unesite prezime!"
+                                                 validator="validacijaPrezime"
+                                                 value="#{prijava.korisnik.prezime}" />
+                                </div> 
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">Korisničko ime:</label>
+                                <div class="col-sm-10">
+                                    <h:inputText class="form-control" required="true"
+                                                 requiredMessage="Unesite korisničko ime!"
+                                                 value="#{prijava.korisnik.korisnickoIme}" />
+                                </div> 
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">Email:</label>
+                                <div class="col-sm-10">
+                                    <h:inputText class="form-control" required="true"
+                                                 requiredMessage="Unesite email!"
+                                                 validator="validacijaEmaila"
+                                                 value="#{prijava.korisnik.email}"/>
+                                </div> 
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">Lozinka:</label>
+                                <div class="col-sm-10">
+                                    <h:inputText class="form-control" required="true"
+                                                 requiredMessage="Unesite lozinku!"                                                
+                                                 value="#{prijava.korisnik.lozinka}"/>
+                                </div> 
+                            </div>                         
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">Slika profila:</label>
+                                <div class="col-sm-10">
+                                    <h:outputText id="profilnaSlika" value="#{upload.fileName}"/>
+                                    <p:fileUpload fileUploadListener="#{upload.handleFileUpload}" update=":growl :azurirajKorisnika:profilnaSlika" required="true" requiredMessage="Izaberite sliku profila!"/>
+                                </div> 
+                            </div>
+                        <div class="form-group"> 
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <b:commandButton value="Ažuriraj korisnika" 
+                                                 action="#{prijava.azurirajProfil()}" ajax="false"/>                    
+                            </div>
+                        </div>
+                    </h:form>
+                </p:dialog>           
+                <b:column class="col-md-12">
+                <br/>
+                    <b:form id="forma1">
+                        <b:dataTable var="n" value="#{komentarController.getSviKomentariJednogKorisnika(prijava.korisnik.korisnikId)}"
+                                     style="margin-bottom: 40px; font-size: 15px; background-color: lightgray;"
+                                     id="tabela1"
+                                     customLangUrl="//cdn.datatables.net/plug-ins/1.10.12/i18n/Croatian.json">           
+                            <b:dataTableColumn label="Svi komentari korisnika #{prijava.korisnik.korisnickoIme}:" 
+                                               style="height: 100px; text-align: justify;">
+                                    <h:graphicImage value="/uploads/#{vijestController.getVijestById(n.vijest.vijestId).vijestSlika}"
+                                                    class="img-thumbnail"
+                                                    width="100" height="100"/>
+                                    <h:outputText value=" "/>
+                                    <h:outputLink style="font-size: large"
+                                                  value="#{request.contextPath}/faces/korisnik/vijesti/#{vijestController.getVijestById(n.vijest.vijestId).vijestId}">
+                                        #{vijestController.getVijestById(n.vijest.vijestId).naslov}
+                                    </h:outputLink>
+                                    <br/>
+                                    <h:outputText id="tekstKomentara" value="#{n.tekst}"/>
+                                    
+                                    <br/>
+                                    <h:outputText value="#{n.vrijemeDatumkomentara}" style="font-size: small; color: gray;">
+                                        <f:convertDateTime pattern="(dd.MM.yyyy / HH:mm)"/>
+                                    </h:outputText>
+                                    
+                                    <div style="text-align: right;">
+                                        <p:commandLink value="Uredi" action="#{komentarController.izaberiKomentar(n)}" update=":dialog3" oncomplete="PF('dlg3').show();"
+                                                     rendered="#{korisnikController.getKorisnikById(n.korisnik.korisnikId).korisnickoIme eq prijava.korisnik.korisnickoIme}"/>
+                                        <h:outputText value=" | "/>
+                                        <p:commandLink value="Obriši" action="#{komentarController.obrisiKomentar(n)}" update=":growl :forma1"
+                                                     rendered="#{korisnikController.getKorisnikById(n.korisnik.korisnikId).korisnickoIme eq prijava.korisnik.korisnickoIme}"/>
+                                    </div>
+                                </b:dataTableColumn>
+                        </b:dataTable>
+                    </b:form>
+                    <p:dialog id="dialog3" header="Uredi komentar" widgetVar="dlg3" modal="false" width="700" height="500" resizable="false" draggable="false" closeOnEscape="true"> 
+                        <h:form id="urediKomentar" class="form-horizontal">                                                  
+                            <div class="form-group">
+                               <label class="control-label col-sm-2">Tekst:</label>
+                               <div class="col-sm-10">
+                                   <h:inputTextarea rows="20" cols="40" class="form-control" required="true" 
+                                                  requiredMessage="Unesite tekst!" 
+                                                  value="#{komentarController.komentar.tekst}"/>
+                               </div>
+                            </div>                         
+                            <div class="form-group"> 
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <p:commandButton value="Ažuriraj komentar" actionListener="#{komentarController.urediKomentar()}"
+                                                     update=":growl :forma1:tabela1" oncomplete="PF('dlg3').hide();"/>
+                                </div>
+                            </div>
+                        </h:form>
+                    </p:dialog>                      
+                </b:column>                   
+            </b:container>
+        </b:jumbotron>
+        <b:container> 
+            <hr/>
+
+            <footer class="container-fluid text-center">
+                <h:graphicImage library="slike" name="lfc_logo.png"
+                                width="50" height="70"/>                
+            </footer>
+
+        </b:container>
+        <br />
+    </h:body>
+</html>

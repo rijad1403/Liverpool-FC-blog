@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">    
+    <h:head>
+        <title>Liverpool FC</title>   
+        <f:metadata>
+            <f:event listener="#{prijava.isAdmin}" type="preRenderView"/>
+        </f:metadata>
+    </h:head> 
+    <h:body style="padding-top: 50px; padding-bottom: 20px; background-color: tomato;">
+        <b:navBar brand="LIVERPOOL FC" brandHref="#" inverse="true" fixed="top">       
+            <b:navbarLinks>
+                <b:navLink value="Početna" outcome="admin"/>                
+                <b:navLink value="Vijesti" outcome="adminVijesti"/>
+                <b:navLink value="Tekme i raspored" outcome="adminTekmeRaspored"/>
+                <b:navLink value="Tim" outcome="adminTim"/>
+                <b:navLink value="Treneri" outcome="adminTreneri"/>
+                <b:navLink value="Stadion" outcome="adminStadion"/>
+                <b:navLink value="Korisnici" outcome="adminListaKorisnika"/>
+            </b:navbarLinks>
+            <b:navbarLinks pull="right">
+                <b:navLink value="Dobrodošli, #{prijava.korisnik.ime}" outcome="adminProfil"/>
+                <b:navLink outcome="adminProfil">
+                    <h:graphicImage value="/uploads/#{prijava.korisnik.korisnikSlika}"
+                                    class="img-circle" width="20" height="20"/>
+                </b:navLink>
+                <h:form styleClass="navbar-form navbar-right">
+                    <b:commandButton look="danger" value="Odjava" action="#{prijava.odjava()}" />               
+                </h:form>
+            </b:navbarLinks>
+        </b:navBar>
+        <b:jumbotron>
+            <b:container>
+                <b:row>       
+                    <b:column col-md="6">
+                        <h1>Dobrodošli</h1>
+                        <p align="justify">Ovdje možete pronaći informacije o trenutnom timu Liverpoola F.C...
+                        </p>
+                    </b:column>
+                    <b:column col-md="6">
+                        <center>
+                        <h:graphicImage library="slike" name="lfc1.png" 
+                                    width="400" height="200" />      
+                        </center>
+                    </b:column>  
+                </b:row>              
+            </b:container>
+        </b:jumbotron>
+        
+        <b:jumbotron style="background-color: tomato;">
+            <b:container>
+                <p>
+                    <h:link outcome="adminDodajIgraca" value="Dodaj u tim >>" class="btn btn-default" />
+                </p>
+                <b:growl id="growl" showDetail="true" allowDismiss="true"/>
+                <h:form id="forma1">
+                    <b:dataTable var="n" value="#{igracController.sviIgraci}" 
+                                 style="margin-bottom:40px; background-color: lightgrey;"
+                                 id="tabela1"
+                                 widgetVar="tabelaIgraca"
+                                 customLangUrl="//cdn.datatables.net/plug-ins/1.10.12/i18n/Croatian.json"> 
+                        <b:dataTableColumn label="Ime i prezime" >
+                            <h:graphicImage value="/uploads/#{n.igracSlika}" class="img-circle"  
+                                            width="20" height="20"/> 
+                            <h:outputText value=" #{n.ime} #{n.prezime}" />                   
+                        </b:dataTableColumn>
+                        <b:dataTableColumn label="Pozicija" >
+                            <h:outputText value="#{n.pozicija}"/>
+                        </b:dataTableColumn>
+                        <b:dataTableColumn label="Broj dresa">
+                            <h:outputText value="#{n.brojDresa}"/>
+                        </b:dataTableColumn>
+                        <b:dataTableColumn style="width: 25%; text-align: right;" label="" orderable="false">
+                            <p:commandLink value="Opširnije" action="#{igracController.izaberiIgraca(n)}" update=":dialog1" oncomplete="PF('dlg1').show();"/>
+                            <h:outputText value=" | "/>
+                            <p:commandLink value="Uredi" action="#{igracController.izaberiIgraca(n)}" update=":dialog2" oncomplete="PF('dlg2').show();"/>
+                            <h:outputText value=" | "/>
+                            <p:commandLink value="Obriši" action="#{igracController.obrisiIgraca(n)}" update=":growl :forma1 "/>
+                        </b:dataTableColumn>
+                    </b:dataTable>
+                </h:form>
+                
+                <p:dialog id="dialog1" header="Opširnije o #{igracController.igrac.ime} #{igracController.igrac.prezime}:"
+                          widgetVar="dlg1" modal="true" width="700" height="500" resizable="false"
+                          draggable="false" closeOnEscape="true" onHide="#{igracController.ponisti()}">
+                    <center>
+                    <p:panelGrid class="table table-hover" style="font-size: 15px;">
+                        <p:row>
+                            <p:column colspan="2"> 
+                                <center>
+                                    <h:graphicImage  value="/uploads/#{igracController.igrac.igracSlika}" width="70%" height="50%"/> 
+                                </center>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                Ime i prezime:
+                            </p:column>
+                            <p:column>
+                                <b>#{igracController.igrac.ime} #{igracController.igrac.prezime}</b>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                Broj dresa:
+                            </p:column>
+                            <p:column>
+                                <b>#{igracController.igrac.brojDresa}</b>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                Pozicija:
+                            </p:column>
+                            <p:column >
+                                <b>#{igracController.igrac.pozicija}</b>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column colspan="2" style="text-align: justify;">
+                                <b>#{igracController.igrac.igracTekst}</b>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    </center>
+                </p:dialog>
+                <p:dialog id="dialog2" header="Uredi nogometaša:" widgetVar="dlg2" modal="true" width="700" height="500" resizable="false" draggable="false" closeOnEscape="true"> 
+                    <h:form id="dodajIgraca" class="form-horizontal" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Ime:</label>
+                            <div class="col-sm-10">
+                                <h:inputText class="form-control" required="true"
+                                             requiredMessage="Unesite ime!"
+                                             value="#{igracController.igrac.ime}" />
+                            </div> 
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Prezime:</label>
+                            <div class="col-sm-10">
+                                <h:inputText class="form-control" required="true"
+                                             requiredMessage="Unesite prezime!"
+                                             value="#{igracController.igrac.prezime}" />
+                            </div> 
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Broj dresa:</label>
+                            <div class="col-sm-10">
+                                <h:inputText class="form-control" required="true"
+                                             requiredMessage="Unesite broj dresa!"
+                                             value="#{igracController.igrac.brojDresa}" />
+                            </div> 
+                        </div> 
+                        <div class="form-group">
+                           <label class="control-label col-sm-2">Pozicija:</label>
+                           <div class="col-md-10">
+                               <h:selectOneMenu class="form-control" value="#{igracController.igrac.pozicija}" required="true" requiredMessage="Izaberite poziciju!">
+                                   <f:selectItem itemLabel="Golman" itemValue="Golman"/>
+                                   <f:selectItem itemLabel="Odbrambeni" itemValue="Odbrambeni"/>
+                                   <f:selectItem itemLabel="Vezni" itemValue="Vezni"/>
+                                   <f:selectItem itemLabel="Napadač" itemValue="Napadač"/>
+                               </h:selectOneMenu>
+                           </div>
+                        </div>              
+                        <div class="form-group">
+                           <label class="control-label col-sm-2">Tekst:</label>
+                           <div class="col-sm-10">
+                               <h:inputTextarea rows="20" cols="40" class="form-control" required="true" 
+                                              requiredMessage="Unesite tekst!" 
+                                              value="#{igracController.igrac.igracTekst}"/>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Slika:</label>
+                            <div class="col-sm-10">
+                                <h:inputHidden id="slika" value="#{upload.fileName}" required="true" requiredMessage="Unesite sliku!"/>
+                                <p:fileUpload fileUploadListener="#{upload.handleFileUpload}" update=":growl :dodajIgraca:slika"/>
+                            </div> 
+                        </div>     
+                        <div class="form-group"> 
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <b:commandButton value="Ažuriraj igrača"
+                                                 actionListener="#{igracController.urediIgraca()}" />
+                              
+                            </div>
+                        </div>
+                    </h:form>
+                </p:dialog>
+            </b:container>
+        </b:jumbotron>
+        
+        <b:container> 
+            <hr/>
+            <footer class="container-fluid text-center">
+                <h:graphicImage library="slike" name="lfc_logo.png"
+                                width="50" height="70"/>                
+            </footer>
+        </b:container>
+        <br />
+    </h:body>
+</html>

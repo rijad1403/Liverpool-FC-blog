@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">    
+    <h:head>
+        <title>Liverpool FC</title>
+        <f:metadata>
+            <f:event listener="#{prijava.isNotLogged}" type="preRenderView"/>       
+        </f:metadata>
+    </h:head> 
+    <h:body style="padding-top: 50px; padding-bottom: 20px; background-color: tomato;">
+        <b:navBar brand="LIVERPOOL FC" brandHref="#" inverse="true" fixed="top">       
+          <b:navbarLinks>
+                <b:navLink value="Početna" outcome="index"/>                
+                <b:navLink value="Vijesti" outcome="vijesti"/>
+                <b:navLink value="Tekme i raspored" outcome="tekmeRaspored"/>
+                <b:navLink value="Tim" outcome="tim"/>
+                <b:navLink value="Treneri" outcome="treneri"/>
+                <b:navLink value="Stadion" outcome="stadion"/>
+            </b:navbarLinks>
+            <b:navbarLinks pull="right">
+                <b:navLink value="Prijava" outcome="prijava"/>    
+                <b:navLink value="Registracija" outcome="registracija"/>               
+            </b:navbarLinks>
+        </b:navBar>
+        <b:jumbotron>
+            <b:container>
+                <b:row>       
+                    <b:column col-md="6">
+                        <h1>Dobrodošli</h1>
+                        <p align="justify">Ovdje možete pronaći informacije o Anfield-u (stadionu Liverpoola)...
+                        </p>
+                    </b:column>
+                    <b:column col-md="6">
+                        <center>
+                        <h:graphicImage library="slike" name="lfc1.png" 
+                                    width="400" height="200" />      
+                        </center>
+                    </b:column>  
+                </b:row>              
+            </b:container>
+        </b:jumbotron>
+        <b:jumbotron style="background-color: tomato;">
+            <b:container>
+                 <b:column class="col-md-6">
+                     <p align="justify">
+                        Anfield je stadion fudbalskog kluba Liverpool od 1892. godine.
+                        Isprva je Anfield imao kapacitet od 20.000 mjesta, ali se vremenom proširivao.
+                        Najveća tribina stadion nazvana je The Kop (dobila je ime po čuvenoj bici kod Spion Kopa u Južnoj Africi,
+                        gdje je oko 300 vojnika iz Liverpoola poginulo), i imala je kapacitet od 28.000 mjesta,
+                        više nego mnogi stadioni u Engleskoj. Po toj tribini neki navijači Liverpoola FC sebe nazivaju Kopites.
+                        Tribina je nakon katastrofe u Hillsboroughu prepravljena te joj je kapacitet smanjen na 12.390 sjedećih mjesta.
+                        Anfield ima 4 tribine koje se različito zovu: The Kop – najveća tribina,
+                        Anfield Road – suprotna tribina Kopu i najmanja po veličini (9.074 mjesta),
+                        Main Stand (12.227 mjesta) i Centenary Stand (11.762 mjesta). Trenutni kapacitet stadiona Anfield je 45.276 sjedećih mjesta,
+                        a prema kriteriju UEFA-e Anfield spada u grupu stadiona s 4 zvjezdice.
+                        2006. godine gradsko vijeće Liverpoola odobrilo je istoimenom klubu izgradnju
+                        novog stadiona na Stanley parku, oko 270 m dalje od Anfielda, a novi stadion bi trebao imati kapacitet
+                        od 60.000 mjesta. Kao teren za treninge Liverpool FC koristi terene na Melwoodu u području grada Liverpoola koje se zove West Derby.
+                     </p>   
+                 </b:column>
+                 <b:column class="col-md-6">
+                     <h:graphicImage library="slike" 
+                                     class="img-thumbnail" name="anfield.jpg"
+                                     width="1000px" height="300px" alt="anfield.jpg" />
+                 </b:column>
+            </b:container>
+            <b:container>
+                <hr/>
+                <footer class="container-fluid text-center">
+                    <h:graphicImage library="slike" name="lfc_logo.png"
+                                    width="50" height="70"/>                
+                </footer>         
+            </b:container>
+        </b:jumbotron>
+    </h:body>
+</html>
+

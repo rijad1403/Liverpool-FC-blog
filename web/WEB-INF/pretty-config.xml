@@ -1,0 +1,22 @@
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+    <url-mapping id="citanjeVijesti">
+        <pattern value="/faces/vijesti/#{citanaVijestId}"/> <!--url pattern-->
+        <view-id value="/faces/citajVijest.xhtml"/> <!--name of the page you want to change the url-->
+    </url-mapping>
+    <url-mapping id="korisnikCitanjeVijesti" >
+        <pattern value="/faces/korisnik/vijesti/#{citanaVijestId}"/>
+        <view-id value="/faces/korisnikCitajVijest.xhtml"/>
+    </url-mapping>
+    <url-mapping id="adminCitanjeVijesti" >
+        <pattern value="/faces/admin/vijesti/#{citanaVijestId}"/>
+        <view-id value="/faces/adminCitajVijest.xhtml"/>
+    </url-mapping>
+    <url-mapping id="adminGledanjeProfila" >
+        <pattern value="/faces/admin/korisnici/#{korisnikId}"/>
+        <view-id value="/faces/adminProfili.xhtml"/>
+    </url-mapping>
+    
+</pretty-config>

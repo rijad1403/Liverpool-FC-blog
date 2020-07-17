@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Liverpool FC</title>
+        <f:metadata>
+            <f:event listener="#{prijava.isAdmin}" type="preRenderView"/>
+        </f:metadata>
+    </h:head>
+    <h:body style="padding-top: 50px; padding-bottom: 20px; background-color: tomato;" onload="#{tekmaController.ponisti()}">
+        <b:navBar brand="LIVERPOOL FC" brandHref="#" inverse="true" fixed="top">       
+            <b:navbarLinks>
+                <b:navLink value="Početna" outcome="admin"/>                
+                <b:navLink value="Vijesti" outcome="adminVijesti"/>
+                <b:navLink value="Tekme i raspored" outcome="adminTekmeRaspored"/>
+                <b:navLink value="Tim" outcome="adminTim"/>
+                <b:navLink value="Treneri" outcome="adminTreneri"/>
+                <b:navLink value="Stadion" outcome="adminStadion"/>
+                <b:navLink value="Korisnici" outcome="adminListaKorisnika"/>
+            </b:navbarLinks>
+            <b:navbarLinks pull="right">
+                <b:navLink value="Dobrodošli, #{prijava.korisnik.ime}" outcome="adminProfil"/>
+                <b:navLink outcome="adminProfil">
+                    <h:graphicImage value="/uploads/#{prijava.korisnik.korisnikSlika}"
+                                    class="img-circle" width="20" height="20"/>
+                </b:navLink>
+                <h:form styleClass="navbar-form navbar-right">
+                    <b:commandButton look="danger" value="Odjava" action="#{prijava.odjava()}" />               
+                </h:form>
+            </b:navbarLinks>
+        </b:navBar>
+        <b:container>
+            <center>
+            <h:graphicImage library="slike" name="lfc1.png" 
+                        width="500" height="300" />      
+            </center>             
+            <h:form id="dodajTekmu" class="form-horizontal" enctype="multipart/form-data">
+                <b:growl id="growl" showDetail="true" allow-dismiss="true"/> 
+                <div class="form-group">
+                    <label class="control-label col-sm-2">Ime protivnika:</label>
+                    <div class="col-sm-10">
+                        <h:inputText class="form-control" required="true"
+                                     requiredMessage="Unesite ime protivnika!"
+                                     value="#{tekmaController.tekma.protivnik}" />
+                    </div> 
+                </div>
+                <div class="form-group">
+                   <label class="control-label col-sm-2">Takmičenje:</label>
+                   <div class="col-md-10">
+                       <h:selectOneMenu class="form-control" value="#{tekmaController.tekma.vrstaTakmicenja}" required="true"
+                                        requiredMessage="Izaberite vrstu takmičenja!" >
+                           <f:selectItem itemLabel="Engleska Premijer liga" itemValue="Engleska Premijer Liga"  />
+                           <f:selectItem itemLabel="Liga prvaka" itemValue="Liga Prvaka"/>
+                           <f:selectItem itemLabel="Evropska liga" itemValue="Evropska Liga"/>
+                           <f:selectItem itemLabel="FA kup" itemValue="FA kup"/>
+                           <f:selectItem itemLabel="EFL kup" itemValue="EFL kup"/>
+                           <f:selectItem itemLabel="Prijateljska tekma" itemValue="Prijateljska tekma"/>
+                       </h:selectOneMenu>
+                   </div>
+                </div> 
+                <div class="form-group">
+                   <label class="control-label col-sm-2">Teren:</label>
+                   <div class="col-md-10">
+                       <h:selectOneMenu class="form-control" value="#{tekmaController.tekma.domaciGosti}" required="true" id="domaciGosti"
+                                        requiredMessage="Izaberite teren!"  >
+                           <f:selectItem itemLabel="" itemValue=""/>
+                           <f:selectItem itemLabel="Domaći teren" itemValue="domaci" />
+                           <f:selectItem itemLabel="Gostujući teren" itemValue="gosti"/>
+                           <f:selectItem itemLabel="Neutralni teren" itemValue="neutral"/>
+                           <f:ajax render="stadion stadion2"/>
+                       </h:selectOneMenu>
+                   </div>
+                </div>              
+                <div class="form-group">
+                    <label class="control-label col-sm-2">Stadion:</label>
+                    <div class="col-sm-10">
+                        <h:panelGroup id="stadion">    
+                            <h:inputText class="form-control" required="true" rendered="#{tekmaController.tekma.domaciGosti ne 'domaci'}"
+                                     requiredMessage="Unesite ime stadiona!"
+                                     value="#{tekmaController.tekma.stadion}"/>
+                        </h:panelGroup>
+                        <h:panelGroup id="stadion2">    
+                            <h:inputText class="form-control" disabled="#{tekmaController.tekma.domaciGosti eq 'domaci'}"
+                                         rendered="#{tekmaController.tekma.domaciGosti eq 'domaci'}"
+                                         value="Anfield"/>
+                        </h:panelGroup>                       
+                    </div> 
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2">Datum / vrijeme tekme:</label>
+                    <div class="col-sm-10">
+                        <b:dateTimePicker value="#{tekmaController.tekma.vrijeme}" format="DD/MM/YYYY HH:mm:ss" required="true" requiredMessage="Unesite datum i vrijeme odigravanja tekme!"/>                    
+                    </div>                    
+                </div>              
+                <div class="form-group"> 
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <b:commandButton value="Dodaj tekmu" update="growl dodajTekmu"
+                                         actionListener="#{tekmaController.dodajTekmu()}"/>
+                                                        
+                    </div>
+                </div>
+            </h:form>
+                        
+        <hr/>
+       <footer class="container-fluid text-center">
+            <h:graphicImage library="slike" name="lfc_logo.png"
+                            width="50" height="70"/>                
+        </footer>
+        </b:container>   
+    </h:body>
+    
+</html>
+
+
+            

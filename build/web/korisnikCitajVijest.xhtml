@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Liverpool FC</title>
+        <f:metadata>
+            <f:event listener="#{prijava.isUser}" type="preRenderView"/>
+            <f:viewParam name="p" value="#{citanaVijestId}"/>
+        </f:metadata>
+    </h:head>
+    <h:body style="padding-top: 50px; padding-bottom: 20px; background-color: tomato;">        
+        <b:navBar brand="LIVERPOOL FC" brandHref="#" inverse="true" fixed="top">       
+            <b:navbarLinks>
+                <b:navLink value="Početna" outcome="korisnik"/>                
+                <b:navLink value="Vijesti" outcome="korisnikVijesti"/>
+                <b:navLink value="Tekme i raspored" outcome="korisnikTekmeRaspored"/>
+                <b:navLink value="Tim" outcome="korisnikTim"/>
+                <b:navLink value="Treneri" outcome="korisnikTreneri"/>
+                <b:navLink value="Stadion" outcome="korisnikStadion"/>
+            </b:navbarLinks>
+            <b:navbarLinks pull="right">
+                <b:navLink value="Dobrodošli, #{prijava.korisnik.ime}" outcome="korisnikProfil"/>
+                <b:navLink outcome="korisnikProfil">
+                    <h:graphicImage value="/uploads/#{prijava.korisnik.korisnikSlika}"
+                                    class="img-circle" width="20" height="20"/>
+                </b:navLink>
+                <h:form styleClass="navbar-form navbar-right">
+                    <b:commandButton look="danger" value="Odjava" action="#{prijava.odjava()}" />               
+                </h:form>
+            </b:navbarLinks>
+        </b:navBar>
+        <b:jumbotron>
+            <b:container>
+                <b:row>       
+                    <b:column col-md="6">
+                        <h1><u><i>#{vijestController.getVijestById(citanaVijestId).naslov}</i></u></h1>                     
+                    </b:column>
+                    <b:column col-md="6">
+                        <center>
+                        <h:graphicImage library="slike" name="lfc1.png" 
+                                    width="400" height="200" />      
+                        </center>
+                    </b:column>  
+                </b:row>              
+            </b:container>
+        </b:jumbotron>     
+        <b:jumbotron style="background-color: tomato;">
+            <b:container>
+                <b:column class="col-md-6">
+                    <p align="justify">
+                        #{vijestController.getVijestById(citanaVijestId).tekst}                    
+                    </p>   
+                </b:column>
+                <b:column class="col-md-6">
+                    <h:graphicImage value="/uploads/#{vijestController.getVijestById(citanaVijestId).vijestSlika}" 
+                                    class="img-thumbnail"
+                                    width="1000px" height="300px" alt="#{vijestController.getVijestById(citanaVijestId).vijestSlika}" />
+                </b:column>
+            </b:container>
+            <b:container>
+                <hr/>
+                <b:row>                
+                    <b:column class="col-md-1">
+                        <h:graphicImage value="/uploads/#{prijava.korisnik.korisnikSlika}" class="img-circle"
+                                        width="100" height="100"/>
+                    </b:column>
+                    <b:column class="col-md-6">
+                        <h:form id="forma">
+                            <b:inputTextarea id="komentar" placeholder="Unesite željeni komentar..." value="#{komentarController.komentar.tekst}"
+                                             required="true" requiredMessage="Nije moguće unijeti prazan komentar."/>
+                            <b:commandButton value="Pošalji" action="#{komentarController.dodajKomentar(citanaVijestId)}" update="forma:komentar :forma1 :growl"/>
+                        </h:form>  
+                    </b:column>
+                </b:row>
+                <br/>
+                <b:row>          
+                    <b:column class="col-md-8">
+                        <b:growl id="growl" showDetail="true"/>
+                        <h:form id="forma1">
+                            <b:dataTable var="n" value="#{komentarController.getSviKomentariOdabraneVijesti(citanaVijestId)}"
+                                         style="margin-bottom: 40px; font-size: 15px; background-color: lightgray;"
+                                         id="tabela1"
+                                         customLangUrl="//cdn.datatables.net/plug-ins/1.10.12/i18n/Croatian.json">           
+                                <b:dataTableColumn label="Komentari:" style="height: 100px; text-align: justify;" dataOrder="#{n.komentarId}" order="asc" >
+                                    <h:graphicImage value="/uploads/#{korisnikController.getKorisnikById(n.korisnik.korisnikId).korisnikSlika}" class="img-circle"
+                                                    width="50" height="50"/>                                   
+                                    <h:outputText value=" #{korisnikController.getKorisnikById(n.korisnik.korisnikId).korisnickoIme}" />
+                                    <br/>                            
+                                    #{n.tekst}
+                                    <br/>
+                                    <h:outputText value="#{n.vrijemeDatumkomentara}" style="font-size: small; color: gray;">
+                                        <f:convertDateTime pattern="(dd.MM.yyyy / HH:mm)"/>
+                                    </h:outputText>
+                                    
+                                    <div style="text-align: right;">
+                                        <p:commandLink value="Uredi" action="#{komentarController.izaberiKomentar(n)}" update=":dialog" oncomplete="PF('dlg').show();"
+                                                     rendered="#{korisnikController.getKorisnikById(n.korisnik.korisnikId).korisnickoIme eq prijava.korisnik.korisnickoIme}"/>
+                                        <h:outputText value=" | "/>
+                                        <p:commandLink value="Obriši" action="#{komentarController.obrisiKomentar(n)}" update=":growl :forma1"
+                                                     rendered="#{korisnikController.getKorisnikById(n.korisnik.korisnikId).korisnickoIme eq prijava.korisnik.korisnickoIme}"/>
+                                    </div>
+                                </b:dataTableColumn>
+                            </b:dataTable>
+                        </h:form>
+                        <p:dialog id="dialog" header="Uredi komentar" widgetVar="dlg" modal="false" width="700" height="500" resizable="false" draggable="false" closeOnEscape="true"> 
+                            <h:form id="urediKomentar" class="form-horizontal">                                                  
+                                <div class="form-group">
+                                   <label class="control-label col-sm-2">Tekst:</label>
+                                   <div class="col-sm-10">
+                                       <h:inputTextarea rows="20" cols="40" class="form-control" required="true" 
+                                                      requiredMessage="Unesite tekst!" 
+                                                      value="#{komentarController.komentar.tekst}"/>
+                                   </div>
+                                </div>                         
+                                <div class="form-group"> 
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <p:commandButton value="Ažuriraj komentar" actionListener="#{komentarController.urediKomentar()}"
+                                                         update=":forma:komentar :growl :forma1:tabela1" oncomplete="PF('dlg').hide();"/>
+                                    </div>
+                                </div>
+                            </h:form>
+                        </p:dialog>   
+                    </b:column>
+                </b:row>
+                <hr/>
+            <footer class="container-fluid text-center">
+                    <h:graphicImage library="slike" name="lfc_logo.png"
+                                    width="50" height="70"/>                
+            </footer>
+            </b:container>
+        </b:jumbotron>
+    </h:body>
+</html>
+
+
